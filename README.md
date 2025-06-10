@@ -2,30 +2,28 @@
 
 <img src="SilentPico.png" alt="SilentPico" width="400">
 
-SilentPico offers a simple and innovative solution to automate the process of maintaining silence on the context of traditional libraries. The system not only helps users themselves notice when they are being noisy, but also keeps librarians informed about the noise level at each desk, ensuring a quieter and more organized environment for everyone.
+This project (unnamed) offers a simple and innovative solution to automate the process of maintaining noise pollution using Rapberry Pi Pico W with BitDogLab Kit.
 
 ## Features
 
 1. Noise detection
 2. Digital-to-dB conversion
-3. Noise notification using LEDs
+3. Media, max and min dB measurement
 4. Wi-Fi and MQTT connectivity
-5. Display of dB values and connection status on the OLED screen
+5. Local mode if Wi-Fi connection fails
 6. Auto Wi-Fi and MQTT reconnection
-7. Local mode if Wi-Fi connection fails
+7. Store dB values on flash if connection fails
 
-## Requirements
+## Hardware Requirements
 
 * Raspberry Pi Pico W
-* Analog Microphone connected on GPIO 28 port (if you are not using Pico W with BITDOGLAB board)
-* Green and Red led connected on GPIO 11 and 13 (if you are not using Pico W with BITDOGLAB board)
+* SM7901TTL sensor (3.3V output)
 * Oled Display (Optional) connected on GPIO 14 (SDA) 15 (SCL) (if you are not using Pico W with BITDOGLAB board)
-* Cmake
-* VS Code
+* Button at GPIO 5 (Optional)
 
 ## Installation
 
-Currently, SilentPico does not yet have the functionality to edit the wifi SSID/PASSWORD, MQTT topic/Broker IP Addres and dB threshold, you will need to install a IDE to edit the code and compile, follow these steps:
+Currently, SilentPico does not yet have the functionality to edit the wifi SSID/PASSWORD, MQTT topic/Broker IP Addres and other parameters, you will need to install a IDE to edit the code and compile, follow these steps:
 
 ### Windows:
 
@@ -61,34 +59,30 @@ See that [tutorial](https://www.youtube.com/watch?v=cMtbuvkkF5c&t=194s) for more
 
 ## Usage
 
-### Libraries:
+1. Libraries
+   
+2. Traffic noise measurement
 
-1. Minimize external noise interference
+4. Industry
 
-2. Place SilentPico at the center of the table
+5. Apartments
 
-3. Ensure tables are spaced adequately (2 meters recommended)
-
-4. Connect SilentPico to Wi-Fi or wait 1 minute for Local Mode
-
-5. SilentPico will notify users and librarians if noise exceeds the threshold
-
-**Note:** SilentPico performs best in quiet environments. For other contexts, ensure proper noise control.
+6. Another noise measurement you need in function of time
 
 ## TODO
 
 The project is still under development, some upgrades are planned to be out very soon:
 
 - [ ] Release .uf2 file
-- [ ] DNS Resolve
+- [ ] DNS Resolve for broker ip
 - [ ] Better way to edit Wi-Fi SSID and PASSWORD
-- [ ] Option to alternate Local and MQTT running mode
+- [x] Store JSONs on flash
+- [x] Option to alternate Local and MQTT running mode
 - [x] Wi-Fi and MQTT: auto reconnection
-- [x] auto Local Running mode after 1 minute of attempts to reconnect
 
 ## Autors
 
-* **jadielucas** (Jadiel Lucas) - *Microphone reading, Wi-Fi and MQTT connection programming*
+* **jadielucas** (Jadiel Lucas)
 
 ## License
 
