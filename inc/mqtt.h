@@ -4,6 +4,8 @@
 #include "inc/mic.h"           // Header for microphone data structures
 #include "lwip/apps/mqtt.h"    // LWIP MQTT client library
 
+extern mqtt_client_t *global_mqtt_client;
+
 /**
  * @brief MQTT connection callback function.
  *

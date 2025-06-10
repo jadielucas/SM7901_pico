@@ -4,11 +4,14 @@
 #include "inc/mqtt.h"                  // Library for MQTT protocol communication
 #include "inc/buttons.h"               // Library for button control
 #include "inc/timertc.h"               // Library for timer and RTC (Real-Time Clock) management
+#include "inc/flash.h"                 // Library for flash memory operations
+#include "pico/stdlib.h"              // Standard library for Raspberry Pi Pico
 
 //Main function of the program
 int main()
 {
     stdio_init_all();                // Initialize standard serial communication
+    init_filesystem();               // Initialize the filesystem for data storage
     setup_display();                 // Initialize the OLED display
     setup_buttons();                 // Configure buttons for user input 
     uart_modbus_config();            // Configure UART for Modbus communication

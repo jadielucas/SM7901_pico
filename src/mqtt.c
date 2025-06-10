@@ -3,6 +3,7 @@
 #include "inc/display.h"
 #include "inc/config.h"
 #include "inc/timertc.h"
+#include "inc/flash.h"
 
 // Structure to store the MQTT client information
 const struct mqtt_connect_client_info_t client_info = {
@@ -40,6 +41,8 @@ void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status
     if (status == MQTT_CONNECT_ACCEPTED)
     {
         printf("Conexão MQTT bem-sucedida!\n"); // Debug message
+
+        resend_saved_data(); // Resend any saved data from flash storage
     }
     else
     {
@@ -57,7 +60,7 @@ void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status
 
 void start_mqtt_client(void)
 {
-    IP4_ADDR(&broker_ip, 192,168,0,29); // Broker IP address
+    IP4_ADDR(&broker_ip, 192,168,0,24); // Broker IP address
 
     global_mqtt_client = mqtt_client_new(); // Create a new MQTT client
 
@@ -86,41 +89,35 @@ void start_mqtt_client(void)
  *
  */
 
-void publish_db_to_mqtt(micdata_t *micdata)
-{
-    char payload[256]; // Payload buffer
-    char timestamp[32]; // Buffer for timestamp
+// Função de publicação MODIFICADA
+void publish_db_to_mqtt(micdata_t *micdata) {
+    char payload[256];
+    char timestamp[32];
     datetime_t now;
 
-    rtc_get_datetime(&now); // Get the current date and time from the RTC
+    rtc_get_datetime(&now);
 
-    // Format the timestamp as "YYYY-MM-DD HH:MM:SS"
     snprintf(timestamp, sizeof(timestamp), "%04d-%02d-%02d %02d:%02d:%02d",
              now.year, now.month, now.day, now.hour, now.min, now.sec);
 
-    // Check if the MQTT client is created/connected, and check if Wi-Fi is connected
-    if (global_mqtt_client && mqtt_client_is_connected(global_mqtt_client) && is_wifi_connected())
-    {
+    // >>> CRIA O PAYLOAD ANTES DE VERIFICAR A CONEXÃO <<<
+    snprintf(payload, sizeof(payload),
+             "{\"id\":\"%d\", \"avgdB\":\"%.2f\", \"mindB\": \"%.2f\", \"maxdB\": \"%.2f\", \"latitude\":%.6f, \"longitude\":%.6f, \"timestamp\":\"%s\"}",
+             micdata->sensor_id, micdata->average, micdata->mindB, micdata->maxdB, micdata->latitude, micdata->longitude, timestamp);
 
-        snprintf(payload, sizeof(payload),
-                 "{\"id\":\"%d\", \"avgdB\":\"%.2f\", \"mindB\": \"%.2f\", \"maxdB\": \"%.2f\", \"latitude\":%.6f, \"longitude\":%.6f, \"timestamp\":\"%s\"}",
-                 micdata->sensor_id, micdata->average, micdata->mindB, micdata->maxdB, micdata->latitude, micdata->longitude, timestamp); // Format the payload with the dB value and location data
+    // Verifica se está conectado
+    if (global_mqtt_client && mqtt_client_is_connected(global_mqtt_client) && is_wifi_connected()) {
+        err_t err = mqtt_publish(global_mqtt_client, MQTT_TOPIC, payload, strlen(payload), 1, 0, NULL, NULL); // QoS 1 para maior garantia
 
-        err_t err = mqtt_publish(global_mqtt_client, MQTT_TOPIC, payload, strlen(payload), 0, 0, NULL, NULL); // Publish the dB value to the MQTT topic
-
-        // Check if the data was published successfully
-        if (err == ERR_OK)
-        {
-            printf("Dados enviados: %s\n", payload); // Debug message
+        if (err == ERR_OK) {
+            printf("Dados enviados via MQTT: %s\n", payload);
+        } else {
+            printf("Erro ao publicar via MQTT: %d. Salvando em flash.\n", err);
+            save_payload_to_flash(payload); // Salva se a publicação falhar
         }
-        else
-        {
-            printf("Erro ao publicar dados: %d\n", err); // Debug message
-        }
-    }
-    else
-    {
-        return;
+    } else {
+        // >>> SE ESTIVER OFFLINE, CHAMA A FUNÇÃO PARA SALVAR <<<
+        save_payload_to_flash(payload);
     }
 }
 
