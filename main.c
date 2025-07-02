@@ -42,7 +42,7 @@ int main()
 
         check_mqtt_connection();                               // Check the MQTT connection status
 
-        sleep_ms(500);                 // Wait 500ms before the next iteration
+        sleep_ms(300);                 // Wait 300ms before the next iteration
 
     }
 

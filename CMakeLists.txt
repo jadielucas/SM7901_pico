@@ -79,6 +79,7 @@ target_link_libraries(Decibelimetro_Pico PRIVATE
     pico_lwip_mqtt
     pico_lwip_sntp
     pico_multicore
+    pico_sync
 )
 
 # ====================================================================================

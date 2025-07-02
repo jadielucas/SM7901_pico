@@ -71,12 +71,29 @@ micdata_t micdata;
 
 }*/
 
+/**
+ * @brief Configures the UART for Modbus communication.
+ * 
+ * This function initializes the UART interface with the specified baud rate,
+ * sets the TX and RX pins to their respective UART functions, and configures the
+ * UART format to 8 data bits, 1 stop bit, and no parity.
+ */
+
 void uart_modbus_config(){
     uart_init(UART_ID, BAUD_RATE); // Initialize UART with specified baud rate
     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Set TX pin function to UART
     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Set RX pin function to UART
     uart_set_format(UART_ID, 8, 1, UART_PARITY_NONE); // Set UART format: 8 data bits, 1 stop bit, no parity
 }
+
+/**
+ * @brief Calculates the Modbus CRC16 checksum for a given buffer.
+ * 
+ * @param buf Pointer to the buffer containing the data.
+ * @param len Length of the buffer.
+ * 
+ * This function computes the CRC16 checksum for the provided buffer using the Modbus CRC algorithm.
+ */
 
 uint16_t modbus_crc16(uint8_t *buf, int len){
     uint16_t crc = 0xFFFF;
@@ -93,6 +110,16 @@ uint16_t modbus_crc16(uint8_t *buf, int len){
     return crc;
 }
 
+/**
+ * @brief Sends a Modbus request to read registers from the microphone sensor.
+ * 
+ * @param device_address The Modbus address of the microphone sensor.
+ * @param start_address The starting address of the registers to read.
+ * @param num_registers The number of registers to read.
+ * 
+ * This function constructs a Modbus request frame and sends it over UART to the microphone sensor.
+ */
+
 void modbus_read_registers(uint8_t device_address, uint16_t start_address, uint16_t num_registers){
     uint8_t request[8];
     request[0] = device_address;
@@ -108,9 +135,21 @@ void modbus_read_registers(uint8_t device_address, uint16_t start_address, uint1
     uart_write_blocking(UART_ID, request, 8);
 }
 
+/**
+ * @brief Reads the Modbus response from the microphone sensor.
+ * 
+ * @param response Pointer to the buffer where the response will be stored.
+ * @param length Length of the expected response.
+ * 
+ * This function reads the Modbus response from the UART interface.
+ * It waits for the specified length of bytes and verifies the CRC of the response.
+ * 
+ * @return true if the response is valid and CRC matches, false otherwise.
+ */
+
 bool modbus_read_response(uint8_t *response, int length){
     int bytes_read = 0;
-    absolute_time_t timeout = make_timeout_time_ms(500); // Set a timeout of 1000 ms
+    absolute_time_t timeout = make_timeout_time_ms(1000); // Set a timeout of 1000 ms
 
     while (bytes_read < length && absolute_time_diff_us(get_absolute_time(), timeout) > 0) {
         if (uart_is_readable(UART_ID)) {
@@ -137,6 +176,16 @@ void parse_decibel_value(uint8_t *response){
         printf("Erro na leitura do sensor.\n");
     }
 }
+
+/**
+ * @brief Calculates the average, maximum, and minimum dB values over a 60-second interval.
+ * 
+ * @param micdata Pointer to the microphone data structure containing the current dB value.
+ * 
+ * This function maintains a rolling average of the dB values collected over the last 60 seconds.
+ * It also tracks the maximum and minimum dB values during this period. Every 60 seconds
+ * it calculates the average dB, updates the max and min dB values, and publishes them to the MQTT broker.
+ */
 
 void get_media_min_max_dB(micdata_t *micdata){
     
