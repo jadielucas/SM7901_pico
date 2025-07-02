@@ -62,6 +62,11 @@ The project is still under development, some upgrades are planned to be out very
 
 * **jadielucas** (Jadiel Lucas)
 
+## Thanks to
+
+* [**tjko**](https://github.com/tjko) for pico-lfs driver
+* [**daschr**](https://github.com/daschr) for ssd1306 pico driver
+
 ## License
 
 This project is licensed under the MIT License - see [LICENSE.md](https://github.com/jadielucas/IP_Project/blob/main/LICENSE) for more details.
