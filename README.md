@@ -1,4 +1,4 @@
-# SilentPico
+# SM7901_pico
 
 <img src="SilentPico.png" alt="SilentPico" width="400">
 
@@ -27,35 +27,13 @@ Currently, SilentPico does not yet have the functionality to edit the wifi SSID/
 
 ### Windows:
 
-1. Install GCC arm 13.3.Rel1
-2. Install Pico SDK 1.5.1
-3. Make sure you have it on your environment variables:
-   
-**On Path:**
-```
-C:\Program Files (x86)\Arm GNU Toolchain arm-none-eabi\13.3 rel1\bin
-C:\Program Files\Raspberry Pi\Pico SDK v1.5.1\pico-sdk\toolchain\13.2 Rel1\bin
-```
-**On system variables:**
-```
-name: PICO_SDK_PATH
+1. Install Pico W drivers with [Zadig](https://zadig.akeo.ie/)
+2. Install [Visual Studio Code](https://code.visualstudio.com/Download)
+3. Install the Raspberry Pi Pico VS Code Extension
+4. There's no need to install other things, Pico extension do everything.
+5. Now you can clone this repo, install submodules and finally compile.
 
-value: C:\Program Files\Raspberry Pi\Pico SDK v1.5.1
-
-name: PICO_TOOLCHAIN_PATH
-
-value: C:\Program Files\Raspberry Pi\Pico SDK v1.5.1\pico-sdk\toolchain
-```
-5. Install VS code
-6. Install these VS code extensions: cmake/cmaketools, C/C++, Raspberry Pi.
-7. import SilentPico Project on Raspberry Pi extension choosing Pico SDK Version 1.5.1
-8. Change WIFI_SSID and WIFI_PASS on <inc/wifi.h> for your Wi-Fi ssid and password, change IP address and MQTT_TOPIC on <inc/mqtt.h> for your broker ip and topic.
-9. Compile Project with Raspberry Pi extension
-10. Install RP2040 drivers for Windows using zadig, choose 1 of the 2 interfaces and install a WinUSB driver (if you want see debug logs, install usbCDC on another interface).
-11. Connect your Pico W on bootsel mode
-12. Run project with Raspberry Pi extension
-
-See that [tutorial](https://www.youtube.com/watch?v=cMtbuvkkF5c&t=194s) for more detailed steps.
+See the oficial [documentation](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) for more detailed steps.
 
 ## Usage
 
