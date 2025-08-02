@@ -7,6 +7,7 @@
 
 static volatile bool sntp_config_pending = true; // Flag to indicate if SNTP configuration is still pending
 static volatile bool sntp_dns_successful = false; // Flag to indicate if SNTP DNS resolution was successful
+bool rtc_initialized = false; // Flag to indicate if RTC has been initialized successfully
 
 /**
  * @brief Sets the RTC time from SNTP epoch seconds and microseconds.
@@ -203,6 +204,7 @@ void init_and_sync_rtc()
                 char datetime_buf[256];
                 datetime_to_str(datetime_buf, sizeof(datetime_buf), &t_check);
                 printf("Tempo atual do RTC: %s\n", datetime_buf);
+                rtc_initialized = true; // RTC initialized successfully
                 break;
             }
 

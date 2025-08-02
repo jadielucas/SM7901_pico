@@ -4,6 +4,7 @@
 #include "inc/flash.h"
 #include "pico/stdlib.h"
 #include "inc/mqtt.h"
+#include "inc/timertc.h"
 
 #define LFS_STORAGE_SIZE (64 * 1024) // 64KB for LittleFS storage
 #define LFS_STORAGE_OFFSET (PICO_FLASH_SIZE_BYTES - LFS_STORAGE_SIZE) // Offset for LittleFS storage (Last 64KB of flash)
@@ -112,6 +113,11 @@ void initialize_file_counter()
 
 void save_payload_to_flash(const char *payload)
 {
+    if(rtc_initialized == false) {
+        printf("RTC não inicializado. Não é possível salvar dados.\n");
+        return;
+    }
+    
     char filename[32];
     snprintf(filename, sizeof(filename), "data_%d.json", file_counter++);
 
