@@ -10,14 +10,6 @@ micdata_t micdata;                // Global variable to hold microphone data
 
 void core1_entry(){
 
-    micdata.device_address = 0x01;      // SM7901 Microphone Modbus address
-    micdata.start_address = 0x0000;    // Start address for Modbus registers
-    micdata.num_registers = 1;         // Number of registers to read
-    micdata.response[7];                // Buffer to store Modbus response
-    micdata.sensor_id = SENSOR_ID;      // Set the sensor ID for the microphone
-    micdata.latitude = MAP_LATITUDE;    // Set the latitude of the microphone
-    micdata.longitude = MAP_LONGITUDE;  // Set the longitude of the microphone
-
     while(true){
 
         check_wifi_connection();                                                                        // Check the Wi-Fi connection status
@@ -25,10 +17,9 @@ void core1_entry(){
 
         modbus_read_registers(micdata.device_address, micdata.start_address, micdata.num_registers);    // Read Modbus registers from the microphone
 
-        float decibel_value = parse_decibel_value(micdata.response);                                    // Parse the response to get the decibel value
-        uint16_t db_fifo_conversion = (uint16_t)(decibel_value * 10);                                   // Convert the decibel value to a suitable format
+        uint16_t decibel_value = parse_decibel_value(micdata.response);                                    // Parse the response to get the decibel value
 
-        multicore_fifo_push_blocking(db_fifo_conversion);                                               // Push the converted value to the FIFO for core 0 to process
+        multicore_fifo_push_blocking(decibel_value);                                               // Push the converted value to the FIFO for core 0 to process
 
         sleep_ms(300);                                                                                  // Sleep for 300 milliseconds before the next iteration
 
@@ -46,6 +37,13 @@ int main()
     start_mqtt_client();             // Start the MQTT client for remote communication
     init_and_sync_rtc();             // Configure the date and time settings
 
+    micdata.device_address = 0x01;      // SM7901 Microphone Modbus address
+    micdata.start_address = 0x0000;    // Start address for Modbus registers
+    micdata.num_registers = 1;         // Number of registers to read
+    micdata.sensor_id = SENSOR_ID;      // Set the sensor ID for the microphone
+    micdata.latitude = MAP_LATITUDE;    // Set the latitude of the microphone
+    micdata.longitude = MAP_LONGITUDE;  // Set the longitude of the microphone
+
     multicore_launch_core1(core1_entry); // Launch core 1 for multi-core processing
 
     // Main loop of the program
@@ -53,11 +51,13 @@ int main()
 
         // CHECK CORE 1 LOGIC IF YOU NEED TO UNDERSTAND HOW IT WORKS
 
-        micdata.dB = (float)multicore_fifo_pop_blocking() / 10.0; // Pop the decibel value from the FIFO and convert it back to float
+        uint16_t decibel_value = multicore_fifo_pop_blocking(); // Pop the decibel value from the FIFO
 
-        get_media_min_max_dB(&micdata);                                         // Calculate the average dB value, max dB, and min dB. MQTT Publish function it's called here.
+        micdata.dB = decibel_value / 10.0F;                      // Convert the decibel value to float and store it in micdata
 
-        update_display_db_value(&micdata);                                      // Update dB value on the display
+        get_media_min_max_dB(&micdata);                         // Calculate the average dB value, max dB, and min dB. MQTT Publish function it's called here.
+
+        update_display_db_value(&micdata);                      // Update dB value on the display
         
     }
 

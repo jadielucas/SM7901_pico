@@ -70,7 +70,7 @@ void modbus_read_registers(uint8_t device_address, uint16_t start_address, uint1
 
 bool modbus_read_response(uint8_t *response, int length);
 
-float parse_decibel_value(uint8_t *response);
+uint16_t parse_decibel_value(uint8_t *response);
 
 void get_media_min_max_dB(micdata_t *micdata);
 

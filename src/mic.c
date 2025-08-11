@@ -164,11 +164,10 @@ bool modbus_read_response(uint8_t *response, int length){
     return received_crc == calculated_crc;
 }
 
-float parse_decibel_value(uint8_t *response){
+uint16_t parse_decibel_value(uint8_t *response){
     if (modbus_read_response(response, 7)) {
             uint16_t raw_value = (response[3] << 8) | response[4];
-            float decibels = raw_value / 10.0;
-            return decibels; // Return the parsed decibel value
+            return raw_value; // return the raw value directly
     } else {
         printf("Erro na leitura do sensor.\n");
     }
