@@ -3,9 +3,6 @@
 #include "inc/display.h"
 #include "inc/mqtt.h"
 
-volatile bool toggle_wifi = false;
-bool wifi_reconnecting = true;
-
 /**
  * @brief Initializes the Wi-Fi connection.
  *
@@ -90,38 +87,7 @@ void check_wifi_connection()
     static uint64_t last_attempt_time = 0;
     uint64_t current_time = time_us_64();
 
-    if (toggle_wifi == true && !is_wifi_connected())
-    {
-
-        printf("Wi-Fi desconectado. Tentando reconectar...\n"); // Debug message
-
-        // Try reconnecting to the Wi-Fi network
-        if (cyw43_arch_wifi_connect_async(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK) == 0)
-        {
-            printf("Reconectando...\n"); // Debug message
-
-            toggle_wifi = false;
-
-            wifi_reconnecting = true;
-        }
-        else
-        {
-            toggle_wifi = false;
-
-            printf("Erro ao iniciar reconexão\n"); // Debug message
-        }
-    }
-
-    else if (toggle_wifi == true && is_wifi_connected())
-    {
-        cyw43_wifi_leave(&cyw43_state, CYW43_ITF_STA); // Disconnect from the Wi-Fi network
-
-        toggle_wifi = false;
-
-        wifi_reconnecting = false;
-    }
-
-    else if (toggle_wifi == false && !is_wifi_connected() && wifi_reconnecting == true)
+    if (!is_wifi_connected())
     {
 
         if (last_attempt_time == 0 || current_time - last_attempt_time >= 60000000)

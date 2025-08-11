@@ -60,7 +60,7 @@ void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status
 
 void start_mqtt_client(void)
 {
-    IP4_ADDR(&broker_ip, 192,168,0,24); // Broker IP address
+    IP4_ADDR(&broker_ip, 192,168,0,28); // Broker IP address
 
     global_mqtt_client = mqtt_client_new(); // Create a new MQTT client
 
@@ -91,6 +91,7 @@ void start_mqtt_client(void)
 
 // Função de publicação MODIFICADA
 void publish_db_to_mqtt(micdata_t *micdata) {
+
     char payload[256];
     char timestamp[32];
     datetime_t now;
@@ -98,7 +99,7 @@ void publish_db_to_mqtt(micdata_t *micdata) {
     rtc_get_datetime(&now);
 
     snprintf(timestamp, sizeof(timestamp), "%04d-%02d-%02d %02d:%02d:%02d",
-             now.year, now.month, now.day, now.hour, now.min, now.sec);
+             now.year, now.month, now.day, now.hour-=GMT_M_3, now.min, now.sec);
 
     // >>> CRIA O PAYLOAD ANTES DE VERIFICAR A CONEXÃO <<<
     snprintf(payload, sizeof(payload),

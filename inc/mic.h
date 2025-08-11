@@ -11,6 +11,7 @@
  * This structure stores raw samples from the microphone and the calculated
  * decibel (dB) value.
  */
+
 typedef struct {
     uint8_t sensor_id;        ///< Unique identifier for the sensor
     //uint16_t samples[SAMPLE_COUNT];  ///< Array to store raw microphone samples
@@ -20,6 +21,12 @@ typedef struct {
     float mindB;                       ///< Minimum decibel level
     float latitude;                    ///< Latitude of the microphone location
     float longitude;                   ///< Longitude of the microphone location
+
+    uint8_t device_address;
+    uint16_t start_address;
+    uint16_t num_registers;
+    uint8_t response[7];
+    
 } micdata_t;
 
 // External declaration of the microphone data instance
@@ -63,7 +70,7 @@ void modbus_read_registers(uint8_t device_address, uint16_t start_address, uint1
 
 bool modbus_read_response(uint8_t *response, int length);
 
-void parse_decibel_value(uint8_t *response);
+float parse_decibel_value(uint8_t *response);
 
 void get_media_min_max_dB(micdata_t *micdata);
 

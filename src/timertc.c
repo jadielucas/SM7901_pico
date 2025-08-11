@@ -1,4 +1,5 @@
 #include "inc/timertc.h"
+#include "inc/config.h"
 #include "pico/util/datetime.h"
 #include "pico/stdlib.h"
 #include "inc/wifi.h"
@@ -202,6 +203,7 @@ void init_and_sync_rtc()
             {
                 printf("RTC sincronizado via SNTP!\n");
                 char datetime_buf[256];
+                t_check.hour -= GMT_M_3; // Adjust for GMT-3
                 datetime_to_str(datetime_buf, sizeof(datetime_buf), &t_check);
                 printf("Tempo atual do RTC: %s\n", datetime_buf);
                 rtc_initialized = true; // RTC initialized successfully

@@ -19,14 +19,15 @@
 //#define RMS_REFERENCE 1.0 // Reference value for RMS calculation
 //#define MIC_PIN 28        // GPIO pin for the microphone input
 //#define ADC_CHANNEL 2     // ADC channel for the microphone input
+
 #define UART_ID uart1
 #define BAUD_RATE 9600
 #define UART_TX_PIN 8
 #define UART_RX_PIN 9
-#define MAP_LATITUDE -3.7849 // Latitude of the microphone location
-#define MAP_LONGITUDE -38.556 // Longitude of the microphone location
+#define MAP_LATITUDE -3.743987 // Latitude of the microphone location-3.7439874257589585, -38.53626710073022
+#define MAP_LONGITUDE -38.536267 // Longitude of the microphone location
 #define SENSOR_ID 1        // Unique identifier for the sensor
-
+#define GMT_M_3 3         // GMT offset for the sensor location (e.g., GMT-3)
 //Display configuration
 #define SDA_PIN 14      // GPIO pin for the SDA line of the I2C interface
 #define SCL_PIN 15      // GPIO pin for the SCL line of the I2C interface

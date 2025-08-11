@@ -5,9 +5,6 @@
 #include "inc/mqtt.h"
 #include "inc/config.h"   // Configuration library for constants and settings
 
-// Structure to store microphone data
-micdata_t micdata;
-
 /**
  * @brief Initializes the ADC for microphone input.
  *
@@ -167,11 +164,11 @@ bool modbus_read_response(uint8_t *response, int length){
     return received_crc == calculated_crc;
 }
 
-void parse_decibel_value(uint8_t *response){
+float parse_decibel_value(uint8_t *response){
     if (modbus_read_response(response, 7)) {
             uint16_t raw_value = (response[3] << 8) | response[4];
             float decibels = raw_value / 10.0;
-            micdata.dB = decibels;
+            return decibels; // Return the parsed decibel value
     } else {
         printf("Erro na leitura do sensor.\n");
     }
