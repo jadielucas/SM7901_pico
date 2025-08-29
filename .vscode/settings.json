@@ -61,6 +61,7 @@
         "string_view": "c",
         "initializer_list": "c",
         "stdlib.h": "c",
-        "mic.h": "c"
+        "mic.h": "c",
+        "dns.h": "c"
     }
 }

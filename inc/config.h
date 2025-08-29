@@ -12,6 +12,8 @@
 //MQTT configuration
 #define MQTT_TOPIC "sensor/sound/pico"
 
+#define MQTT_BROKER "test.mosquitto.org"
+
 //Sensor configuration
 //#define SAMPLE_COUNT 100   // Number of samples to collect from the microphone
 //#define DB_THRESHOLD 70    // Decibel threshold for signal processing or triggering events

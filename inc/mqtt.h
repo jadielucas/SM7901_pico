@@ -4,7 +4,10 @@
 #include "inc/mic.h"           // Header for microphone data structures
 #include "lwip/apps/mqtt.h"    // LWIP MQTT client library
 
-extern mqtt_client_t *global_mqtt_client;
+extern mqtt_client_t *global_mqtt_client; // Declare the global MQTT client
+
+static void dns_function_callback(const char *name, const ip_addr_t *ipaddr, void *callback_arg);
+void resolve_broker_dns(ip_addr_t *broker_ip);
 
 /**
  * @brief MQTT connection callback function.

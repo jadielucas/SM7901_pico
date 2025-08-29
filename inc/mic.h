@@ -15,7 +15,7 @@
 typedef struct {
     uint8_t sensor_id;        ///< Unique identifier for the sensor
     //uint16_t samples[SAMPLE_COUNT];  ///< Array to store raw microphone samples
-    volatile float dB;                ///< Calculated decibel level from the samples
+    float dB;                ///< Calculated decibel level from the samples
     float average;                     ///< Average decibel level
     float maxdB;                       ///< Maximum decibel level
     float mindB;                       ///< Minimum decibel level
@@ -28,9 +28,6 @@ typedef struct {
     uint8_t response[7];
     
 } micdata_t;
-
-// External declaration of the microphone data instance
-extern micdata_t micdata;
 
 /**
  * @brief Initializes the microphone.

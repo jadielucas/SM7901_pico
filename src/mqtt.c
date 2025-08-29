@@ -4,6 +4,7 @@
 #include "inc/config.h"
 #include "inc/timertc.h"
 #include "inc/flash.h"
+#include "lwip/dns.h"
 
 // Structure to store the MQTT client information
 const struct mqtt_connect_client_info_t client_info = {
@@ -15,9 +16,36 @@ const struct mqtt_connect_client_info_t client_info = {
 
 // MQTT Client
 mqtt_client_t *global_mqtt_client = NULL;
+ip_addr_t broker_ip; // Global variable to store the broker IP address
 
-// Broker IP address
-ip_addr_t broker_ip;
+static void dns_function_callback(const char *name, const ip_addr_t *ipaddr, void *callback_arg){
+
+    LWIP_UNUSED_ARG(name);
+    LWIP_UNUSED_ARG(callback_arg);
+
+    if (ipaddr != NULL)
+    {
+        printf("DNS resolvido: %s\n", ipaddr_ntoa(ipaddr));
+        ip_addr_copy(broker_ip, *ipaddr); // Copy the resolved IP address to the global variable
+
+        mqtt_client_connect(global_mqtt_client, &broker_ip, MQTT_PORT, mqtt_connection_cb, NULL, &client_info); // Connect to the broker
+    }
+    else
+    {
+        printf("Falha ao resolver DNS (callback retornou NULL).\n");
+    }
+    
+}
+
+void resolve_broker_dns(ip_addr_t *broker_ip) {
+
+    ip_addr_t dns_server_addr;
+
+    ipaddr_aton("8.8.8.8", &dns_server_addr);
+    dns_setserver(0, &dns_server_addr);
+
+    err_t err = dns_gethostbyname(MQTT_BROKER, broker_ip, dns_function_callback, NULL);
+}
 
 /**
  * @brief Callback function for MQTT connection events.
@@ -60,7 +88,6 @@ void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status
 
 void start_mqtt_client(void)
 {
-    IP4_ADDR(&broker_ip, 192,168,0,28); // Broker IP address
 
     global_mqtt_client = mqtt_client_new(); // Create a new MQTT client
 
@@ -71,9 +98,8 @@ void start_mqtt_client(void)
         return;
     }
 
-    mqtt_client_connect(global_mqtt_client, &broker_ip, MQTT_PORT, mqtt_connection_cb, NULL, &client_info); // Connect to the broker
+    resolve_broker_dns(&broker_ip); // Resolve the broker DNS to get the IP address
 
-    sleep_ms(5000); // Wait 5 seconds for the connection to be established
 }
 
 /**
