@@ -2,7 +2,7 @@
 
 <img src="SilentPico.png" alt="SilentPico" width="400">
 
-This project (unnamed) offers a simple and innovative solution to automate the process of maintaining noise pollution using Rapberry Pi Pico W with BitDogLab Kit.
+This project (unnamed yet) offers a simple and innovative solution to automate the process of maintaining noise pollution using Rapberry Pi Pico W with BitDogLab Kit.
 
 ## Features
 
@@ -29,9 +29,8 @@ Currently, SilentPico does not yet have the functionality to edit the wifi SSID/
 
 1. Install Pico W drivers with [Zadig](https://zadig.akeo.ie/)
 2. Install [Visual Studio Code](https://code.visualstudio.com/Download)
-3. Install the Raspberry Pi Pico VS Code Extension
-4. There's no need to install other things, Pico extension do everything.
-5. Now you can clone this repo, install submodules and finally compile.
+3. Install the Raspberry Pi Pico VS Code Extension (There's no need to install other things, Pico extension do everything)
+4. Now you can clone this repo, install submodules and finally compile.
 
 See the oficial [documentation](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) for more detailed steps.
 
@@ -52,8 +51,8 @@ See the oficial [documentation](https://datasheets.raspberrypi.com/pico/getting-
 The project is still under development, some upgrades are planned to be out very soon:
 
 - [ ] Release .uf2 file
-- [ ] DNS Resolve for broker ip
-- [ ] Better way to edit Wi-Fi SSID and PASSWORD
+- [ ] Better way to edit Wi-Fi SSID and PASSWORD and other settings
+- [x] DNS Resolve for broker ip
 - [x] Store JSONs on flash
 - [x] Option to alternate Local and MQTT running mode
 - [x] Wi-Fi and MQTT: auto reconnection
